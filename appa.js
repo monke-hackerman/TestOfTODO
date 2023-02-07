@@ -6,7 +6,7 @@ const db = require("better-sqlite3")("database.db");
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "wwwecyn"))); //world wide web exsept china y northkorea
+app.use(express.static(path.join(__dirname, "wwwecyn"))); //world wide web except china y northkorea
 app.use(express.urlencoded({ extended: true }))
 
 app.use(session({
