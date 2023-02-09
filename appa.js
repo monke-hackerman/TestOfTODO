@@ -44,6 +44,9 @@ app.post(("/login"), async (req, res) => {
         console.log("ye got inn")
         res.redirect("/index.html")
         req.session.LogedIn = true
+        if(req.session.LogedIn === true){
+            console.log("session started")
+        }
     } else {
         console.log("fuck off")
         res.redirect("back")
@@ -54,10 +57,16 @@ app.post(("/signout"), async (req, res) => {
     console.log("byebye")
     res.redirect("/logg.html")
     req.session.LogedIn = false
+    if(req.session.LogedIn === false){
+        console.log("session ended")
+    }
 })
 app.get("/index.html", (req, res) =>{
     if(req.session.LogedIn !== true){
         res.redirect("/logg.html")
+        console.log("not logged inn")
+    }else{
+        console.log("ye got inn")
     }
 })
 app.listen("3000", () => {
