@@ -43,26 +43,26 @@ app.post(("/login"), async (req, res) => {
     if(await bcrypt.compare(svr.password, userData.hash)) {
         console.log("ye got inn")
         res.redirect("/index.html")
-        req.session.LogedIn = true
-        if(req.session.LogedIn === true){
+        req.session.loggedin = true
+        if(req.session.loggedin === true){
             console.log("session started")
         }
     } else {
         console.log("fuck off")
         res.redirect("back")
-        req.session.LogedIn = false
+        req.session.loggedin = false
     }
 })
 app.post(("/signout"), async (req, res) => {
     console.log("byebye")
     res.redirect("/logg.html")
-    req.session.LogedIn = false
-    if(req.session.LogedIn === false){
+    req.session.loggedin = false
+    if(req.session.loggedin === false){
         console.log("session ended")
     }
 })
 app.get("/index.html", (req, res) =>{
-    if(req.session.LogedIn !== true){
+    if(req.session.loggedin !== true){
         res.redirect("/logg.html")
         console.log("not logged inn")
     }else{
