@@ -3,7 +3,7 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 const path = require("path");
 const db = require("better-sqlite3")("database.db");
-
+const hbs = require('hbs')
 const app = express();
 
 
@@ -11,9 +11,8 @@ const rootpath = path.join(__dirname, "wwwecyn")
 
 //app.use(express.static(path.join(__dirname, "wwwecyn"))); //world wide web except china y northkorea
 app.use(express.urlencoded({ extended: true }))
-
-const viewPath = path.join(__dirname, "views/pages")
-const partialsPath = path.join(__dirname, "views/partials")
+const viewPath = path.join(__dirname, "../views/pages")
+const partialsPath = path.join(__dirname, "../views/partials")
 app.set("view engine", hbs)
 app.set('views',viewPath)
 hbs.registerPartials(partialsPath)
@@ -24,7 +23,7 @@ app.use(session({
     saveUninitialized: false
 }))
 app.get("/", (req, res) =>{
-    res.redirect("/index.html")
+    res.redirect("/hoved")
 })
 app.get("/reg.html", (req, res) =>{
     res.sendFile(rootpath + "/reg.html")
@@ -48,7 +47,7 @@ app.post(("/NyBruk"), async (req, res) => {
 
     db.prepare("INSERT INTO user (name, email, hash) VALUES (?, ?, ?)").run(svr.navn, svr.email, hash)
 
-    res.redirect("/index.html")
+    res.redirect("/hoved")
 })
 app.post(("/login"), async (req, res) => {
     let svr = req.body
@@ -59,7 +58,7 @@ app.post(("/login"), async (req, res) => {
         console.log("loggedinn")
         req.session.loggedin = true
         console.log(req.session.loggedin)
-        res.redirect("/index.html")
+        res.redirect("/hoved")
         
     }else {
         console.log("fuck off")
@@ -75,10 +74,10 @@ app.post(("/signout"), async (req, res) => {
         console.log("session ended")
     }
 })
-app.get("/index.html", (req, res) =>{
+app.get("/hoved", (req, res) =>{
     if(req.session.loggedin){
         console.log("ye got inn")
-        res.sendFile(rootpath + "/index.html")
+        res.render("/hoved.hbs")
     }else{
         res.sendFile(rootpath + "/logg.html")
         console.log("not logged inn")
