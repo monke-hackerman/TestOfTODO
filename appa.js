@@ -74,7 +74,7 @@ app.post(("/signout"), async (req, res) => {
         console.log("session ended")
     }
 })
-app.get("/hoved", (req, res) =>{
+function Hoved(req, res){
     if(req.session.loggedin){
         console.log("ye got inn")
         res.render("/hoved.hbs", {
@@ -84,7 +84,8 @@ app.get("/hoved", (req, res) =>{
         res.sendFile(rootpath + "/logg.html")
         console.log("not logged inn")
     }
-})
+}
+app.get("/hoved", Hoved)
 app.listen("3000", () => {
     console.log("Server listening at http://localhost:3000")
 })
