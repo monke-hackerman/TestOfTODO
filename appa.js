@@ -11,8 +11,8 @@ const rootpath = path.join(__dirname, "wwwecyn")
 
 //app.use(express.static(path.join(__dirname, "wwwecyn"))); //world wide web except china y northkorea
 app.use(express.urlencoded({ extended: true }))
-const viewPath = path.join(__dirname, "../views/pages")
-const partialsPath = path.join(__dirname, "../views/partials")
+const viewPath = path.join(__dirname, "views/pages")
+const partialsPath = path.join(__dirname, "views/partials")
 app.set("view engine", hbs)
 app.set('views',viewPath)
 hbs.registerPartials(partialsPath)
@@ -77,7 +77,9 @@ app.post(("/signout"), async (req, res) => {
 app.get("/hoved", (req, res) =>{
     if(req.session.loggedin){
         console.log("ye got inn")
-        res.render("/hoved.hbs")
+        res.render("/hoved.hbs", {
+            PersonName: "Bob kåre"
+        })
     }else{
         res.sendFile(rootpath + "/logg.html")
         console.log("not logged inn")
