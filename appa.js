@@ -12,6 +12,12 @@ const rootpath = path.join(__dirname, "wwwecyn")
 //app.use(express.static(path.join(__dirname, "wwwecyn"))); //world wide web except china y northkorea
 app.use(express.urlencoded({ extended: true }))
 
+const viewPath = path.join(__dirname, "../views/pages")
+const partialsPath = path.join(__dirname, "../views/partials")
+app.set("view engine", hbs)
+app.set('views',viewPath)
+hbs.registerPartials(partialsPath)
+
 app.use(session({
     secret: "hrafnnafdafnafar",
     resave: false,
