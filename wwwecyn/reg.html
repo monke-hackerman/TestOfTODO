@@ -9,10 +9,11 @@
 <body>
     <form action="/NyBruk" method="post">
         <label for="navn">Brukernavn: </label><input type="text" name="navn" id=""><br>
-        <label for="email">Email: </label><input type="text" name="email"><br>
+        <label for="email">Email: </label><input type="email" name="email"><br>
         <label for="passord">Passord: </label><input type="password" name="passord" id=""><br>
         <button>Register ny bruker</button>
     </form>
+    <h1><a href="/">logginn</a></h1>
     <script>
         const params = new URLSearchParams(window.location.search);
         if(params.get('error')==="invalid_username"){

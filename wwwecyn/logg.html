@@ -8,11 +8,16 @@
 </head>
 <body>
     <form action="/login" method="post">
-        <label for="email">Email: </label><input type="text" name="email"><br>
+        <label for="emailORuser">Email: </label><input type="text" name="emailORuser"><br>
         <label for="password">Passord: </label><input type="password" name="password" id=""><br>
         <button>i got you Bro ;))</button>
         <h1><a href="reg.html">lag bruker her</a></h1>
-        <h1><a href="index.html">skiplogin (test sessions)</a></h1>
     </form>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if(params.get('error')==="not_found"){
+            alert("User not found try again")
+        }
+    </script>
 </body>
 </html>
