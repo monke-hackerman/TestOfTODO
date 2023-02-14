@@ -43,7 +43,16 @@ app.post(("/NyBruk"), async (req, res) => {
     console.log(svr)
     console.log(hash)
 
+    const allowedRegex = /\W/g
+    const navn = svr.navn
+
+    if (allowedRegex.test(navn)){
+        return res.redirect("/reg.html?error=invalid_username")
+    }
+
     db.prepare("INSERT INTO user (name, email, hash) VALUES (?, ?, ?)").run(svr.navn, svr.email, hash)
+
+    
 
     res.redirect("/hoved")
 })

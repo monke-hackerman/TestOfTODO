@@ -13,5 +13,11 @@
         <label for="passord">Passord: </label><input type="password" name="passord" id=""><br>
         <button>Register ny bruker</button>
     </form>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if(params.get('error')==="invalid_username"){
+            alert("Username can only contain letters A-Z, a-z, and _")
+        }
+    </script>
 </body>
 </html>
