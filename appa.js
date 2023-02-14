@@ -2,7 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 const path = require("path");
-const db = require("better-sqlite3")("database.db");
+const db = require("better-sqlite3")("database.sdb");
 const hbs = require('hbs')
 const app = express();
 
@@ -10,21 +10,19 @@ const app = express();
 const rootpath = path.join(__dirname, "wwwecyn")
 
 //app.use(express.static(path.join(__dirname, "wwwecyn"))); //world wide web except china y northkorea
-app.use(express.urlencoded({ extended: true }))
-const viewPath = path.join(__dirname, "views/pages")
-const partialsPath = path.join(__dirname, "views/partials")
+const viewPath = path.join(__dirname, "/views/pages")
+const partialsPath = path.join(__dirname, "/views/partials")
 app.set("view engine", hbs)
 app.set('views',viewPath)
 hbs.registerPartials(partialsPath)
+app.use(express.urlencoded({ extended: true }))
+
 
 app.use(session({
     secret: "hrafnnafdafnafar",
     resave: false,
     saveUninitialized: false
 }))
-app.get("/", (req, res) =>{
-    res.redirect("/hoved")
-})
 app.get("/reg.html", (req, res) =>{
     res.sendFile(rootpath + "/reg.html")
 })
@@ -53,9 +51,10 @@ app.post(("/login"), async (req, res) => {
     let svr = req.body
 
     let userData = db.prepare("SELECT * FROM user WHERE email = ?").get(svr.email);
+
     
     if(await bcrypt.compare(svr.password, userData.hash)) {
-        console.log("loggedinn")
+        console.log(userData.name, "loggedinn")
         req.session.loggedin = true
         console.log(req.session.loggedin)
         res.redirect("/hoved")
@@ -77,8 +76,9 @@ app.post(("/signout"), async (req, res) => {
 function Hoved(req, res){
     if(req.session.loggedin){
         console.log("ye got inn")
-        res.render("/hoved.hbs", {
-            PersonName: "Bob kåre"
+        
+        res.render("hoved.hbs", {
+            PersonName: "username"
         })
     }else{
         res.sendFile(rootpath + "/logg.html")
@@ -86,6 +86,7 @@ function Hoved(req, res){
     }
 }
 app.get("/hoved", Hoved)
+app.get("/", Hoved)
 app.listen("3000", () => {
     console.log("Server listening at http://localhost:3000")
 })
