@@ -55,6 +55,7 @@ app.post(("/login"), async (req, res) => {
     
     if(await bcrypt.compare(svr.password, userData.hash)) {
         console.log(userData.name, "loggedinn")
+        req.session.username = userData.name
         req.session.loggedin = true
         console.log(req.session.loggedin)
         res.redirect("/hoved")
@@ -75,10 +76,10 @@ app.post(("/signout"), async (req, res) => {
 })
 function Hoved(req, res){
     if(req.session.loggedin){
-        console.log("ye got inn")
+        console.log("ye got inn", req.session.username)
         
         res.render("hoved.hbs", {
-            PersonName: "username"
+            PersonName: req.session.username
         })
     }else{
         res.sendFile(rootpath + "/logg.html")
@@ -87,6 +88,7 @@ function Hoved(req, res){
 }
 app.get("/hoved", Hoved)
 app.get("/", Hoved)
+
 app.listen("3000", () => {
     console.log("Server listening at http://localhost:3000")
 })
