@@ -27,6 +27,9 @@ app.get("/reg.html", (req, res) => {
     res.sendFile(rootpath + "/reg.html")
 })
 
+//ikke bruk men kan skjekke visits
+
+/*
 app.get("/visits", (req, res) => {
     if (req.session.visitsCount == undefined) {
         req.session.visitsCount = 1
@@ -36,6 +39,9 @@ app.get("/visits", (req, res) => {
     res.send("antall visits: " + req.session.visitsCount)
     console.log(req.session.visitsCount)
 })
+*/
+
+//ny bruker registrering
 app.post(("/NyBruk"), async (req, res) => {
     let svr = req.body
 
@@ -58,6 +64,7 @@ app.post(("/NyBruk"), async (req, res) => {
 
     res.redirect("/hoved")
 })
+//login skjekk
 app.post(("/login"), async (req, res, next) => {
     let svr = req.body
     let UserORemail = ""
@@ -89,6 +96,7 @@ app.post(("/login"), async (req, res, next) => {
         req.session.loggedin = false
     }
 })
+//sign out
 app.post(("/signout"), async (req, res) => {
     console.log("byebye")
     res.sendFile(rootpath + "/logg.html")
@@ -97,6 +105,7 @@ app.post(("/signout"), async (req, res) => {
         console.log("session ended")
     }
 })
+//hoved root brukes for framside og redirect til innlogging
 function Hoved(req, res) {
     if (req.session.loggedin) {
         console.log("ye got inn", req.session.username)
@@ -112,11 +121,19 @@ function Hoved(req, res) {
 app.get("/hoved", Hoved)
 app.get("/", Hoved)
 
+//sender deg til listen din
+app.get("/list", (req, res) => {
+    res.render("hoved.hbs", {
+        PersonName: req.session.username
+    })
+})
+
+//prøver å stoppe serveren fra å stoppe hvis den krasjer
 app.use((err, req, res, next) => {
     console.warn(err.stack)
     res.status(500).send("i fucked up")
 })
-
+//hvilken port appen er på
 app.listen("3000", () => {
     console.log("Server listening at http://localhost:3000")
 })
