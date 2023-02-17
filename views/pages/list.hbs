@@ -7,9 +7,15 @@
     <title></title>
 </head>
 <body>
+    <h1>{{PersonName}}'s lists</h1>
     <ul>
         <li>test</li>
         <li>test</li>
     </ul>
+
+    <form action="/makelist">
+        <label for="todo">New to-do list: </label><input type="text" name="todo" id=""><br>
+        <button>Make new to-do list</button>
+    </form>
 </body>
 </html>

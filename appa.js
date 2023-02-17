@@ -23,6 +23,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
+// alt for logginn
 app.get("/reg.html", (req, res) => {
     res.sendFile(rootpath + "/reg.html")
 })
@@ -60,8 +61,6 @@ app.post(("/NyBruk"), async (req, res) => {
 
     db.prepare("INSERT INTO user (name, email, hash) VALUES (?, ?, ?)").run(svr.navn, svr.email, hash)
 
-
-
     res.redirect("/hoved")
 })
 //login skjekk
@@ -86,6 +85,7 @@ app.post(("/login"), async (req, res, next) => {
     if (await bcrypt.compare(svr.password, userData.hash)) {
         console.log(userData.name, "loggedinn")
         req.session.username = userData.name
+        req.session.id = userData.id
         req.session.loggedin = true
         console.log(req.session.loggedin)
         res.redirect("/hoved")
@@ -121,11 +121,18 @@ function Hoved(req, res) {
 app.get("/hoved", Hoved)
 app.get("/", Hoved)
 
+//alt for lister
 //sender deg til listen din
 app.get("/list", (req, res) => {
-    res.render("hoved.hbs", {
+    res.render("list.hbs", {
         PersonName: req.session.username
     })
+})
+app.post(("/makelist"), (req, res) => {
+    let svr = req.body
+    db.prepare("INSERT INTO ToDoList (name, user_id) VALUES (?, ?)").run(svr.todo, req.session.id)
+    res.redirect("/list")
+
 })
 
 //prøver å stoppe serveren fra å stoppe hvis den krasjer
@@ -133,6 +140,7 @@ app.use((err, req, res, next) => {
     console.warn(err.stack)
     res.status(500).send("i fucked up")
 })
+
 //hvilken port appen er på
 app.listen("3000", () => {
     console.log("Server listening at http://localhost:3000")
