@@ -110,7 +110,7 @@ function Hoved(req, res) {
     if (req.session.loggedin) {
         console.log("ye got inn", req.session.username)
 
-        res.render("hoved.hbs", {
+        res.render("listoverview.hbs", {
             PersonName: req.session.username
         })
     } else {
