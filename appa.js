@@ -52,7 +52,7 @@ app.post(("/NyBruk"), async (req, res) => {
 
     // \w = A-Z, a-z, and _
     // \W = NOT A-Z, NOT a-z, and NOT _
-    const allowedRegex = /\W/g
+    const allowedRegex = /\W/g  
     const navn = svr.navn
 
     if (allowedRegex.test(navn)) {
@@ -125,8 +125,14 @@ app.get("/", Hoved)
 //sender deg til listen din
 app.get("/list", (req, res) => {
     let id = req.session.userID
-    let name = db.prepare(`SELECT name FROM ToDoLists WHERE user_id = ?;`).run(id)
-    console.log(name.name);
+    console.log(id)
+    if(!id){
+        res.sendFile(rootpath + "/logg.html")
+        console.log("not logged inn")
+    }
+
+    let ListsName = db.prepare(`SELECT name FROM ToDoLists WHERE user_id = ?;`).get(id)
+    console.log(ListsName);
     res.render("listoverview.hbs", {
         PersonName: req.session.username
     })
@@ -134,7 +140,11 @@ app.get("/list", (req, res) => {
 app.post(("/makelist"), (req, res) => {
     let svr = req.body
     let userid = req.session.userID
-    db.prepare("INSERT INTO ToDoLists (name, user_id) VALUES (?, ?)").run(svr.todo, userid)
+    if(!id){
+        res.sendFile(rootpath + "/logg.html")
+        console.log("not logged inn")
+    }
+    db.prepare(`INSERT INTO ToDoLists (name, user_id) VALUES (?, ?)`).run(svr.todo, userid)
     res.redirect("/list")
 
 })
@@ -147,7 +157,7 @@ app.get("/getlist", (req, res) => {
 //prøver å stoppe serveren fra å stoppe hvis den krasjer
 app.use((err, req, res, next) => {
     console.warn(err.stack)
-    res.status(500).send("i fucked up")
+    res.status(500).send("error 500 internal server error")
 })
 
 //hvilken port appen er på
