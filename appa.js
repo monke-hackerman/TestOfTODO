@@ -2,7 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 const path = require("path");
-const db = require("better-sqlite3")("database.sdb", {verbose: console.log});
+const db = require("better-sqlite3")("databaseer.sdb", {verbose: console.log});
 const hbs = require('hbs')
 const app = express();
 
@@ -85,7 +85,7 @@ app.post(("/login"), async (req, res, next) => {
     if (await bcrypt.compare(svr.password, userData.hash)) {
         console.log(userData.name, "loggedinn")
         req.session.username = userData.name
-        req.session.id = userData.id
+        req.session.userID = userData.id
         req.session.loggedin = true
         console.log(req.session.loggedin)
         res.redirect("/hoved")
@@ -124,17 +124,26 @@ app.get("/", Hoved)
 //alt for lister
 //sender deg til listen din
 app.get("/list", (req, res) => {
-    res.render("list.hbs", {
+    let id = req.session.userID
+    let name = db.prepare(`SELECT name FROM ToDoLists WHERE user_id = ?;`).run(id)
+    console.log(name.name);
+    res.render("listoverview.hbs", {
         PersonName: req.session.username
     })
 })
 app.post(("/makelist"), (req, res) => {
     let svr = req.body
-    db.prepare("INSERT INTO ToDoList (name, user_id) VALUES (?, ?)").run(svr.todo, req.session.id)
+    let userid = req.session.userID
+    db.prepare("INSERT INTO ToDoLists (name, user_id) VALUES (?, ?)").run(svr.todo, userid)
     res.redirect("/list")
 
 })
-
+app.get("/getlist", (req, res) => {
+    res.render("list.hbs", {
+        listoverview: "hello"
+    })
+    
+})
 //prøver å stoppe serveren fra å stoppe hvis den krasjer
 app.use((err, req, res, next) => {
     console.warn(err.stack)
