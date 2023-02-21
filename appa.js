@@ -9,7 +9,7 @@ const app = express();
 
 const rootpath = path.join(__dirname, "wwwecyn")
 
-//app.use(express.static(path.join(__dirname, "wwwecyn"))); //world wide web except china y northkorea
+app.use(express.static(path.join(__dirname, "other"))); //world wide web except china y northkorea
 const viewPath = path.join(__dirname, "/views/pages")
 const partialsPath = path.join(__dirname, "/views/partials")
 app.set("view engine", hbs)
@@ -110,9 +110,7 @@ function Hoved(req, res) {
     if (req.session.loggedin) {
         console.log("ye got inn", req.session.username)
 
-        res.render("listoverview.hbs", {
-            PersonName: req.session.username
-        })
+        res.redirect("/list")
     } else {
         res.sendFile(rootpath + "/logg.html")
         console.log("not logged inn")
@@ -131,8 +129,8 @@ app.get("/list", (req, res) => {
         console.log("not logged inn")
     }
 
-    let ListsName = db.prepare(`SELECT name FROM ToDoLists WHERE user_id = ?;`).get(id)
-    console.log(ListsName);
+    let ListsName = db.prepare(`SELECT name FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(id)
+
     res.render("listoverview.hbs", {
         PersonName: req.session.username
     })
@@ -140,7 +138,7 @@ app.get("/list", (req, res) => {
 app.post(("/makelist"), (req, res) => {
     let svr = req.body
     let userid = req.session.userID
-    if(!id){
+    if(!userid){
         res.sendFile(rootpath + "/logg.html")
         console.log("not logged inn")
     }

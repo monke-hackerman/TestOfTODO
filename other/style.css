@@ -1,0 +1,23 @@
+body {
+  font-size: 12;
+}
+.container {  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 0.5fr 1fr 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "right-header right-header left-header"
+    "grid1 grid2 grid3"
+    ". . .";
+}
+
+.grid1 { grid-area: grid1; }
+
+.grid2 { grid-area: grid2; }
+
+.grid3 { grid-area: grid3; }
+
+.right-header { grid-area: right-header;  background-color: #2596be; text-align: left;}
+
+.left-header { grid-area: left-header; background-color: #2596be; text-align: end;}

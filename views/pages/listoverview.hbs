@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,16 +8,30 @@
     <link rel="stylesheet" href="style.css">
     <title>List Overview</title>
 </head>
-<body>
-    <h1>{{PersonName}}'s lists</h1>
-    <ul>
-        <li>test</li>
-        <li>test</li>
-    </ul>
 
-    <form action="/makelist" method="post">
-        <label for="todo">New to-do list: </label><input type="text" name="todo"><br>
-        <button>Make new to-do list</button>
-    </form>
+<body>
+    <div class="container">
+        <div class="right-header">
+            <h1>{{PersonName}}'s lists</h1>
+        </div>
+        <div class="left-header"><h1><img class="right" src="add.png" alt="add list" height="40" width="40px"></h1></div>
+        <div class="grid1"></div>
+        <div class="grid2"></div>
+        <div class="grid3"></div>
+
+
+
+
+        <ul>
+            <li>test</li>
+            <li>test</li>
+        </ul>
+
+        <form action="/makelist" method="post">
+            <label for="todo">New to-do list: </label><input type="text" name="todo"><br>
+            <button>Make new to-do list</button>
+        </form>
+    </div>
 </body>
+
 </html>
