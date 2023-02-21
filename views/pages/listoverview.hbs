@@ -10,28 +10,37 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="right-header">
-            <h1>{{PersonName}}'s lists</h1>
-        </div>
-        <div class="left-header"><h1><img class="right" src="add.png" alt="add list" height="40" width="40px"></h1></div>
-        <div class="grid1"></div>
-        <div class="grid2"></div>
-        <div class="grid3"></div>
-
-
-
-
-        <ul>
-            <li>test</li>
-            <li>test</li>
-        </ul>
-
+<div class="topnav">
+  <a class="active">{{PersonName}}'s lists</a>
+  <div id="myLinks">
         <form action="/makelist" method="post">
-            <label for="todo">New to-do list: </label><input type="text" name="todo"><br>
+            <label for="todo">Name: </label><input type="text" name="todo"> <br>
+            <label for="tags">Tags:</label>
+            <input type="checkbox" name="tags" value="home" id="tags">home
+            <input type="checkbox" name="tags" value="job" id="tags">job
+            <input type="checkbox" name="tags" value="skole" id="tags">skole
+            <input type="checkbox" name="tags" value="other" id="tags">other
+            <br>
+
             <button>Make new to-do list</button>
         </form>
-    </div>
+  </div>
+  <a href="javascript:void(0);" class="icon" onclick="openSesemi()">
+    <img class="right" src="add.png" alt="add list" height="20px" width="20px">
+  </a>
+
+
+<script>
+function openSesemi() {
+  var x = document.getElementById("myLinks");
+  if (x.style.display === "block") {
+    x.style.display = "none";
+  } else {
+    x.style.display = "block";
+  }
+}
+</script>
+
 </body>
 
 </html>

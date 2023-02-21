@@ -152,6 +152,11 @@ app.get("/getlist", (req, res) => {
     })
     
 })
+app.get("/test", (req, res) => {
+    res.render("test.hbs", {
+        PersonName: req.session.username
+    })   
+})
 //prøver å stoppe serveren fra å stoppe hvis den krasjer
 app.use((err, req, res, next) => {
     console.warn(err.stack)
