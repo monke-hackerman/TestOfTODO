@@ -27,9 +27,17 @@
   </div>
   <a href="javascript:void(0);" class="icon" onclick="openSesemi()">
     <img class="right" src="add.png" alt="add list" height="20px" width="20px">
-  </a>
-
-
+<div>
+<form action="/CheckTags" method="post">
+    <label for="tags">Tags:</label>
+    <input type="checkbox" name="tags" value="home" id="tags">home
+    <input type="checkbox" name="tags" value="job" id="tags">job
+    <input type="checkbox" name="tags" value="skole" id="tags">skole
+    <input type="checkbox" name="tags" value="other" id="tags">other
+    <br>
+    <button>Check list with tags</button>
+</form>
+</div>
 <script>
 function openSesemi() {
   var x = document.getElementById("myLinks");
