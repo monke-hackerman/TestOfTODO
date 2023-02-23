@@ -2,7 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 const path = require("path");
-const db = require("better-sqlite3")("databaseer.sdb", {verbose: console.log});
+const db = require("better-sqlite3")("databaseer.sdb", { verbose: console.log });
 const hbs = require('hbs')
 const app = express();
 
@@ -52,7 +52,7 @@ app.post(("/NyBruk"), async (req, res) => {
 
     // \w = A-Z, a-z, and _
     // \W = NOT A-Z, NOT a-z, and NOT _
-    const allowedRegex = /\W/g  
+    const allowedRegex = /\W/g
     const navn = svr.navn
 
     if (allowedRegex.test(navn)) {
@@ -124,38 +124,83 @@ app.get("/", Hoved)
 app.get("/list", (req, res) => {
     let id = req.session.userID
     console.log(id)
-    if(!id){
+    if (req.session.loggedin) {
+        console.log("ye got inn", req.session.username)
+    } else {
         res.sendFile(rootpath + "/logg.html")
         console.log("not logged inn")
     }
 
     let ListsName = db.prepare(`SELECT name FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(id)
-
+    console.log(ListsName)
     res.render("listoverview.hbs", {
-        PersonName: req.session.username
+        PersonName: req.session.username,
+        ListsOwn: ListsName
     })
 })
 app.post(("/makelist"), (req, res) => {
     let svr = req.body
     let userid = req.session.userID
-    if(!userid){
+    let taggid = []
+    if (!userid) {
         res.sendFile(rootpath + "/logg.html")
         console.log("not logged inn")
     }
-    db.prepare(`INSERT INTO ToDoLists (name, user_id) VALUES (?, ?)`).run(svr.todo, userid)
+    //first insert the todolist
+    let insert = db.prepare(`INSERT INTO ToDoLists (name, user_id) VALUES (?, ?)`).run(svr.todo, userid)
+
+    //then we'll find out if there more then one anwser.
+    if (typeof svr.tags === "string") { //if tehres just one we push it into
+        console.log(svr.tags)
+        taggid.push(...db.prepare(`SELECT id FROM tags WHERE name = ?`).all(svr.tags))
+    }
+    else if (Array.isArray(svr.tags)) { // if theres more then one we have a for loop that goes through each one and psuhes that
+        console.log(svr.tags)
+        svr.tags.forEach(tag => {
+            taggid.push(...db.prepare(`SELECT id FROM tags WHERE name = ?`).all(tag))
+        })
+
+    } else {
+        console.log("time to kys")
+    }
+    console.log(taggid)
+    taggid.forEach(({ id }) => {
+        db.prepare(`INSERT INTO ToDoLists_has_tags (ToDoLists_id, tags_id) VALUES (?, ?)`).run(insert.lastInsertRowid, id)
+    })
+
     res.redirect("/list")
+
+})
+app.get("/CheckTags", (req, res) => {
+    let userid = req.session.userID
+    console.log(req.query.tags)
+    if (typeof req.query.tags === "string") {
+        let ListsOwn = db.prepare(`SELECT id FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(userid)
+        console.log(ListsOwn)
+        res.render("listoverview.hbs", {
+            PersonName: req.session.username,
+            ListsOwn: ListsOwn
+        })
+    }
+    else if (Array.isArray(req.query.tags)) {
+
+    } else {
+        res.render("listoverview.hbs", {
+            PersonName: req.session.username
+        })
+    }
 
 })
 app.get("/getlist", (req, res) => {
     res.render("list.hbs", {
         listoverview: "hello"
     })
-    
+
 })
 app.get("/test", (req, res) => {
     res.render("test.hbs", {
         PersonName: req.session.username
-    })   
+    })
 })
 //prøver å stoppe serveren fra å stoppe hvis den krasjer
 app.use((err, req, res, next) => {

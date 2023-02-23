@@ -12,13 +12,13 @@
 <body>
 <div class="topnav">
   <a class="active">{{PersonName}}'s lists</a>
-  <div id="myLinks">
+  <div id="Make">
         <form action="/makelist" method="post">
             <label for="todo">Name: </label><input type="text" name="todo"> <br>
             <label for="tags">Tags:</label>
             <input type="checkbox" name="tags" value="home" id="tags">home
             <input type="checkbox" name="tags" value="job" id="tags">job
-            <input type="checkbox" name="tags" value="skole" id="tags">skole
+            <input type="checkbox" name="tags" value="school" id="tags">school
             <input type="checkbox" name="tags" value="other" id="tags">other
             <br>
 
@@ -26,9 +26,11 @@
         </form>
   </div>
   <a href="javascript:void(0);" class="icon" onclick="openSesemi()">
-    <img class="right" src="add.png" alt="add list" height="20px" width="20px">
-<div>
-<form action="/CheckTags" method="post">
+    <img class="right" src="add.png" alt="add list" height="20px" width="20px"> 
+</a>
+
+<div class="other">
+  <form action="/CheckTags" method="get">
     <label for="tags">Tags:</label>
     <input type="checkbox" name="tags" value="home" id="tags">home
     <input type="checkbox" name="tags" value="job" id="tags">job
@@ -38,9 +40,18 @@
     <button>Check list with tags</button>
 </form>
 </div>
+<div>
+    {{#each ListsOwn}} <!-- en foreach løkke som går gjennom hver ting i datatebellen-->
+    <ol>
+        <li>navn: {{this.name}}</li>
+    </ol>
+    {{/each}}
+</div>
+
+
 <script>
 function openSesemi() {
-  var x = document.getElementById("myLinks");
+  var x = document.getElementById("Make");
   if (x.style.display === "block") {
     x.style.display = "none";
   } else {

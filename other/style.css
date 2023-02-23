@@ -7,7 +7,7 @@ body {
   position: relative;
 }
 
-.topnav #myLinks {
+.topnav #Make {
   display: none;
   color: white;
 }
@@ -34,4 +34,14 @@ body {
 .active {
   background-color: #04AA6D;
   color: white;
+}
+
+.other {
+  overflow: hidden;
+  background-color: white;
+}
+.other label{
+  overflow: hidden;
+  background-color: white;
+  color: black;
 }
