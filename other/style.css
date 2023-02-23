@@ -45,3 +45,21 @@ body {
   background-color: white;
   color: black;
 }
+.lists{
+  overflow: hidden;
+  background-color: white;
+  color: black;
+}
+.lists label{
+  overflow: hidden;
+  color: black;
+}
+.signout{
+  position: fixed;
+  right: 50px;
+  height: 30px;
+  border: var(--primery-boarder);
+  border-radius: 10px;
+  border-style: ridge;
+  font-size: 16px;
+}

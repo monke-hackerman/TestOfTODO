@@ -97,7 +97,7 @@ app.post(("/login"), async (req, res, next) => {
     }
 })
 //sign out
-app.post(("/signout"), async (req, res) => {
+app.get(("/signout"), async (req, res) => {
     console.log("byebye")
     res.sendFile(rootpath + "/logg.html")
     req.session.loggedin = false
@@ -131,7 +131,7 @@ app.get("/list", (req, res) => {
         console.log("not logged inn")
     }
 
-    let ListsName = db.prepare(`SELECT name FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(id)
+    let ListsName = db.prepare(`SELECT name, id FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(id)
     console.log(ListsName)
     res.render("listoverview.hbs", {
         PersonName: req.session.username,
@@ -191,9 +191,10 @@ app.get("/CheckTags", (req, res) => {
     }
 
 })
-app.get("/getlist", (req, res) => {
-    res.render("list.hbs", {
-        listoverview: "hello"
+app.get("/makeElement", (req, res) => {
+    
+    res.render("listoverview.hbs", {
+        PersonName: req.session.username
     })
 
 })

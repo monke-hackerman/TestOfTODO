@@ -10,8 +10,12 @@
 </head>
 
 <body>
+  <div class="signout">
+    <a href="/signout"><img src="sign-out.png" alt="singout" width="20px" height="20px"></a>
+  </div>
+
 <div class="topnav">
-  <a class="active">{{PersonName}}'s lists</a>
+  <a class="active" >{{PersonName}}'s lists </a>
   <div id="Make">
         <form action="/makelist" method="post">
             <label for="todo">Name: </label><input type="text" name="todo"> <br>
@@ -40,9 +44,14 @@
     <button>Check list with tags</button>
 </form>
 </div>
-<div>
+<div class="lists">
     {{#each ListsOwn}} <!-- en foreach løkke som går gjennom hver ting i datatebellen-->
-      <a href="/">navn: {{this.name}}</a>
+      <h3>{{this.name}}
+      <form action="/makeElement" method="post">
+      <input value="{{this.id}}" name="Listname" hidden>
+      <label for="elementname">New Element: </label><input type="text" name="elementname">
+      <button>Make</button>
+      </form>
     {{/each}}
 </div>
 
