@@ -18,6 +18,7 @@ hbs.registerPartials(partialsPath)
 app.use(express.urlencoded({ extended: true }))
 
 
+
 app.use(session({
     secret: "hrafnnafdafnafar",
     resave: false,
@@ -122,31 +123,55 @@ app.get("/", Hoved)
 //alt for lister
 //sender deg til listen din
 app.get("/list", (req, res) => {
-    let userid = req.session.userID
-    let Elements = []
-    console.log(userid)
-    if (req.session.loggedin) {
-        console.log("ye got inn", req.session.username)
-    } else {
-        res.sendFile(rootpath + "/logg.html")
-        console.log("not logged inn")
+    if (!req.session.loggedin) {
+      res.sendFile(rootpath + "/logg.html")
+      console.log("not logged in")
+      return
     }
+  
+    const userId = req.session.userID
 
-    let ListsName = db.prepare(`SELECT name, id FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(userid)
-    
-    ListsName.forEach(listid => {
-        if (listid && listid.length > 0) {
-          const result = db.prepare(`SELECT name, done FROM ListElement WHERE ToDoLists_id = ? LIMIT 500;`).all(listid[0]);
-          Elements.push(result);
+    //vi lager en sql spøring som joiner tabelen ToDoLists og listElement
+    const toDoLists = db.prepare(`
+      SELECT tl.id, tl.name, le.name AS elementName, le.done 
+      FROM ToDoLists tl 
+      LEFT JOIN ListElement le ON tl.id = le.ToDoLists_id 
+      WHERE tl.user_id = ? 
+      ORDER BY tl.id, le.id
+    `).all(userId)
+    //så lager vi en liste hvor vi setter inn all informasjonen
+    const lists = {}
+    toDoLists.forEach((row) => {
+      const listId = row.id
+      const listName = row.name
+      const elementName = row.elementName
+      const elementDone = row.done
+        
+      //enne if statmente sjekker om et objekt med listId eksisterer hvis det ikke eksisterer oppretter den et nytt objekt
+      if (!lists.hasOwnProperty(listId)) {
+        lists[listId] = {
+          name: listName,
+          elements: []
         }
-      });
- 
-    console.log(ListsName)
-    res.render("listoverview.hbs", {
-        PersonName: req.session.username,
-        ListsOwn: ListsName,
-        ElementsOwn: Elements
+      }
+      //dette if statmente legger til nye elementer i hver liste som ikke er lik null.
+      if (elementName !== null) {
+        lists[listId].elements.push({
+          name: elementName,
+          done: elementDone
+        })
+      }
     })
+  
+    res.render("listoverview.hbs", {
+      PersonName: req.session.username,
+      ListsOwn: Object.values(lists)
+    })
+})
+app.post(("/deleteList"), (req, res) => {
+    let svr = req.body
+    db.prepare(`DELETE FROM ToDoLists WHERE id = ?;`).run(svr.Listid)
+    res.redirect("/list")
 })
 app.post(("/makelist"), (req, res) => {
     let svr = req.body

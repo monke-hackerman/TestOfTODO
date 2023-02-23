@@ -45,21 +45,26 @@
 </form>
 </div>
 <div class="lists">
-    {{#each ListsOwn}} <!-- en foreach løkke som går gjennom hver ting i datatebellen-->
-      <h3>{{this.name}}
-      <form action="/makeElement" method="post">
-      <input value="{{this.id}}" name="Listname" hidden>
-      <label for="elementname">New Element: </label><input type="text" name="elementname">
-      <button>Make</button>
-      {{#each Elements}}
-        <ul>
-          <li value="{{this.done}}">{{this.name}}</li>
-        </ul>
-      {{/each}}
-      
+  {{#each ListsOwn}}
+    <h3>{{this.name}} <form action="/deleteList" method="post">
+      <input type="hidden" name="Listid" value="{{this.id}}">
+      <button><img src="bin.png" alt="trash bin" height="20px" width="20px"></button>
       </form>
-    {{/each}}
+      </h3>
+    <form action="/makeElement" method="post">
+      <input type="hidden" name="Listname" value="{{this.id}}">
+      <label for="elementname">New Element: </label>
+      <input type="text" name="elementname">
+      <button>Make</button>
+    </form>
+    <ul>
+      {{#each this.elements}}
+        <li>{{this.name}} - {{#if this.done}}Done{{else}}Not done{{/if}}</li>
+      {{/each}}
+    </ul>
+  {{/each}}
 </div>
+
 
 
 <script>
