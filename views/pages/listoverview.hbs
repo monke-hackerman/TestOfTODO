@@ -51,6 +51,12 @@
       <input value="{{this.id}}" name="Listname" hidden>
       <label for="elementname">New Element: </label><input type="text" name="elementname">
       <button>Make</button>
+      {{#each Elements}}
+        <ul>
+          <li value="{{this.done}}">{{this.name}}</li>
+        </ul>
+      {{/each}}
+      
       </form>
     {{/each}}
 </div>

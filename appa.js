@@ -122,8 +122,9 @@ app.get("/", Hoved)
 //alt for lister
 //sender deg til listen din
 app.get("/list", (req, res) => {
-    let id = req.session.userID
-    console.log(id)
+    let userid = req.session.userID
+    let Elements = []
+    console.log(userid)
     if (req.session.loggedin) {
         console.log("ye got inn", req.session.username)
     } else {
@@ -131,11 +132,20 @@ app.get("/list", (req, res) => {
         console.log("not logged inn")
     }
 
-    let ListsName = db.prepare(`SELECT name, id FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(id)
+    let ListsName = db.prepare(`SELECT name, id FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(userid)
+    
+    ListsName.forEach(listid => {
+        if (listid && listid.length > 0) {
+          const result = db.prepare(`SELECT name, done FROM ListElement WHERE ToDoLists_id = ? LIMIT 500;`).all(listid[0]);
+          Elements.push(result);
+        }
+      });
+ 
     console.log(ListsName)
     res.render("listoverview.hbs", {
         PersonName: req.session.username,
-        ListsOwn: ListsName
+        ListsOwn: ListsName,
+        ElementsOwn: Elements
     })
 })
 app.post(("/makelist"), (req, res) => {
@@ -156,8 +166,8 @@ app.post(("/makelist"), (req, res) => {
     }
     else if (Array.isArray(svr.tags)) { // if theres more then one we have a for loop that goes through each one and psuhes that
         console.log(svr.tags)
-        svr.tags.forEach(tag => {
-            taggid.push(...db.prepare(`SELECT id FROM tags WHERE name = ?`).all(tag))
+        svr.tags.forEach(tags => {
+            taggid.push(...db.prepare(`SELECT id FROM tags WHERE name = ?`).all(tags))
         })
 
     } else {
@@ -191,11 +201,11 @@ app.get("/CheckTags", (req, res) => {
     }
 
 })
-app.get("/makeElement", (req, res) => {
+app.post("/makeElement", (req, res) => {
+    let svr = req.body
+    db.prepare(`INSERT INTO ListElement (name, done, ToDoLists_id) VALUES (?, ?, ?)`).run(svr.elementname, 0, svr.Listname)
     
-    res.render("listoverview.hbs", {
-        PersonName: req.session.username
-    })
+    res.redirect("/list")
 
 })
 app.get("/test", (req, res) => {
