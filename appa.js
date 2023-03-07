@@ -150,6 +150,7 @@ app.get("/list", (req, res) => {
       //enne if statmente sjekker om et objekt med listId eksisterer hvis det ikke eksisterer oppretter den et nytt objekt
       if (!lists.hasOwnProperty(listId)) {
         lists[listId] = {
+          id: listId,
           name: listName,
           elements: []
         }
@@ -167,11 +168,6 @@ app.get("/list", (req, res) => {
       PersonName: req.session.username,
       ListsOwn: Object.values(lists)
     })
-})
-app.post(("/deleteList"), (req, res) => {
-    let svr = req.body
-    db.prepare(`DELETE FROM ToDoLists WHERE id = ?;`).run(svr.Listid)
-    res.redirect("/list")
 })
 app.post(("/makelist"), (req, res) => {
     let svr = req.body
@@ -226,11 +222,23 @@ app.get("/CheckTags", (req, res) => {
     }
 
 })
+app.post(("/deleteList"), (req, res) => {
+    let svr = req.body
+    db.prepare(`DELETE FROM ListElement WHERE ToDoLists_id = ?;`).run(svr.DelId)
+    db.prepare(`DELETE FROM ToDoLists_has_tags WHERE ToDoLists_id = ?;`).run(svr.DelId)
+    db.prepare(`DELETE FROM ToDoLists WHERE id = ?;`).run(svr.DelId)
+    res.redirect("/list")
+})
 app.post("/makeElement", (req, res) => {
     let svr = req.body
     db.prepare(`INSERT INTO ListElement (name, done, ToDoLists_id) VALUES (?, ?, ?)`).run(svr.elementname, 0, svr.Listname)
     
     res.redirect("/list")
+
+})
+app.post("/ThingDone", (req, res) => {
+    let svr = req.body
+    let doneOrNot = db.prepare(`SELECT done FROM ListElement WHERE id = ?`).all(svr.DonId)
 
 })
 app.get("/test", (req, res) => {

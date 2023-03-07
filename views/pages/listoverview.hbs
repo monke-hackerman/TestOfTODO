@@ -47,7 +47,7 @@
 <div class="lists">
   {{#each ListsOwn}}
     <h3>{{this.name}} <form action="/deleteList" method="post">
-      <input type="hidden" name="Listid" value="{{this.id}}">
+      <input type="hidden" name="DelId" value="{{this.id}}">
       <button><img src="bin.png" alt="trash bin" height="20px" width="20px"></button>
       </form>
       </h3>
@@ -59,7 +59,12 @@
     </form>
     <ul>
       {{#each this.elements}}
-        <li>{{this.name}} - {{#if this.done}}Done{{else}}Not done{{/if}}</li>
+        <li>{{this.name}} - 
+          <form action="/ThingDone" method="post">
+          <input type="hidden"name="DonId" value="{{this.id}}">
+          <button>{{#if this.done}}Done{{else}}Not done{{/if}}</button>
+          </form>
+        </li>
       {{/each}}
     </ul>
   {{/each}}
