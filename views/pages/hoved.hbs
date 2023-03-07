@@ -32,7 +32,11 @@
 <input type="hidden" name="UserDelId" value="{{id}}">
 <button>delete this user</button>
 </form>
-
-</form>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('error')==="invalid_username"){
+        alert("Username can only contain letters A-Z, a-z, and _")
+    }
+</script>
 </body>
 </html>

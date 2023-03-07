@@ -35,12 +35,13 @@
 </a>
 
 <div class="other">
-  <form action="/CheckTags" method="get">
+  <form action="/CheckTags" method="post">
     <label for="tags">Tags:</label>
-    <input type="checkbox" name="tags" value="home" id="tags">home
-    <input type="checkbox" name="tags" value="job" id="tags">job
-    <input type="checkbox" name="tags" value="skole" id="tags">skole
-    <input type="checkbox" name="tags" value="other" id="tags">other
+    <input type="radio" name="tags" value="home" id="tags">home
+    <input type="radio" name="tags" value="job" id="tags">job
+    <input type="radio" name="tags" value="school" id="tags">skole
+    <input type="radio" name="tags" value="other" id="tags">other
+    <input type="radio" name="tags" value="ViewAll" id="tags">View all
     <br>
     <button>Check list with tags</button>
 </form>

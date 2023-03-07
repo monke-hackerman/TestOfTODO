@@ -124,51 +124,51 @@ app.get("/", Hoved)
 //sender deg til listen din
 app.get("/list", (req, res) => {
     if (!req.session.loggedin) {
-      res.sendFile(rootpath + "/logg.html")
-      console.log("not logged in")
-      return
+        res.sendFile(rootpath + "/logg.html")
+        console.log("not logged in")
+        return
     }
-  
+
     const userId = req.session.userID
 
     //vi lager en sql spøring som joiner tabelen ToDoLists og listElement
     const toDoLists = db.prepare(`
-      SELECT tl.id, tl.name, le.name AS elementName, le.done, le.id AS elementId
-      FROM ToDoLists tl 
-      LEFT JOIN ListElement le ON tl.id = le.ToDoLists_id 
-      WHERE tl.user_id = ? 
-      ORDER BY tl.id, le.id
+        SELECT tl.id, tl.name, le.name AS elementName, le.done, le.id AS elementId
+        FROM ToDoLists tl 
+        LEFT JOIN ListElement le ON tl.id = le.ToDoLists_id 
+        WHERE tl.user_id = ? 
+        ORDER BY tl.id, le.id
     `).all(userId)
     //så lager vi en liste hvor vi setter inn all informasjonen
     const lists = {}
     toDoLists.forEach((row) => {
-      const listId = row.id
-      const listName = row.name
-      const elementId = row.elementId
-      const elementName = row.elementName
-      const elementDone = row.done
+        const listId = row.id
+        const listName = row.name
+        const elementId = row.elementId
+        const elementName = row.elementName
+        const elementDone = row.done
         
-      //enne if statmente sjekker om et objekt med listId eksisterer hvis det ikke eksisterer oppretter den et nytt objekt
-      if (!lists.hasOwnProperty(listId)) {
+        //enne if statmente sjekker om et objekt med listId eksisterer hvis det ikke eksisterer oppretter den et nytt objekt
+        if (!lists.hasOwnProperty(listId)) {
         lists[listId] = {
-          id: listId,
-          name: listName,
-          elements: []
+            id: listId,
+            name: listName,
+            elements: []
         }
-      }
-      //dette if statmente legger til nye elementer i hver liste som ikke er lik null.
-      if (elementName !== null) {
+        }
+        //dette if statmente legger til nye elementer i hver liste som ikke er lik null.
+        if (elementName !== null) {
         lists[listId].elements.push({
-          id: elementId,
-          name: elementName,
-          done: elementDone
+            id: elementId,
+            name: elementName,
+            done: elementDone
         })
-      }
+        }
     })
-  
+
     res.render("listoverview.hbs", {
-      PersonName: req.session.username,
-      ListsOwn: Object.values(lists)
+        PersonName: req.session.username,
+        ListsOwn: Object.values(lists)
     })
 })
 app.post(("/makelist"), (req, res) => {
@@ -204,25 +204,52 @@ app.post(("/makelist"), (req, res) => {
     res.redirect("/list")
 
 })
-app.get("/CheckTags", (req, res) => {
-    let userid = req.session.userID
-    console.log(req.query.tags)
-    if (typeof req.query.tags === "string") {
-        let ListsOwn = db.prepare(`SELECT id FROM ToDoLists WHERE user_id = ? LIMIT 500;`).all(userid)
-        console.log(ListsOwn)
-        res.render("listoverview.hbs", {
-            PersonName: req.session.username,
-            ListsOwn: ListsOwn
-        })
+app.post("/CheckTags", (req, res) => {   
+    let svr = req.body
+    const userId = req.session.userID
+    if(svr.tags === "ViewAll"){
+        res.redirect("/list")
     }
-    else if (Array.isArray(req.query.tags)) {
+    let taggid = db.prepare(`SELECT id FROM tags WHERE name = ?`).all(svr.tags)
 
-    } else {
-        res.render("listoverview.hbs", {
-            PersonName: req.session.username
+    //vi lager en sql spøring som joiner tabelen ToDoLists og listElement
+    const toDoLists = db.prepare(`
+    SELECT tl.id, tl.name, le.name AS elementName, le.done, le.id AS elementId, Tlt.ToDoLists_id as TltId, Tlt.tags_id
+    FROM ToDoLists tl, ToDoLists_has_tags Tlt
+    JOIN ListElement le ON tl.id = le.ToDoLists_id and tl.id = TltId and Tlt.tags_id = ?
+    WHERE tl.user_id = ?
+    ORDER BY tl.id, le.id
+    `).all(taggid[0].id, userId)
+    //så lager vi en liste hvor vi setter inn all informasjonen
+    const lists = {}
+    toDoLists.forEach((row) => {
+        const listId = row.id
+        const listName = row.name
+        const elementId = row.elementId
+        const elementName = row.elementName
+        const elementDone = row.done
+        
+        //enne if statmente sjekker om et objekt med listId eksisterer hvis det ikke eksisterer oppretter den et nytt objekt
+        if (!lists.hasOwnProperty(listId)) {
+        lists[listId] = {
+            id: listId,
+            name: listName,
+            elements: []
+        }
+        }
+        //dette if statmente legger til nye elementer i hver liste som ikke er lik null.
+        if (elementName !== null) {
+        lists[listId].elements.push({
+            id: elementId,
+            name: elementName,
+            done: elementDone
         })
-    }
-
+        }
+    })
+    res.render("listoverview.hbs", {
+    PersonName: req.session.username,
+    ListsOwn: Object.values(lists)
+    })
 })
 app.post(("/deleteList"), (req, res) => {
     let svr = req.body
@@ -309,7 +336,7 @@ app.post("/DeleteUser", (req, res) => {
     }
     else if (Array.isArray(Tlid)) { // if theres more then one list we have a for loop that goes through and deletes eveyone
 
-        for(let i = 0; i > Tlid.length(); i++){
+        for(let i = 0; i < Tlid.length; i++){
             db.prepare(`DELETE FROM ListElement WHERE ToDoLists_id = ?;`).run(Tlid[i].id)
             db.prepare(`DELETE FROM ToDoLists_has_tags WHERE ToDoLists_id = ?;`).run(Tlid[i].id)
         }
@@ -317,10 +344,11 @@ app.post("/DeleteUser", (req, res) => {
     } else {
         console.log("time to kys")
     }
-    db.prepare(`DELETE FROM ToDoLists WHERE id = ?;`).run(userId)
-    //db.prepare(`DELETE FROM user WHERE id = ?;`).run(userId)
 
-    //req.session.loggedin = false
+    db.prepare(`DELETE FROM ToDoLists WHERE user_id = ?;`).run(userId)
+    db.prepare(`DELETE FROM user WHERE id = ?;`).run(userId)
+
+    req.session.loggedin = false
     res.redirect("/")
 })
 
