@@ -4,13 +4,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>poop</title>
+    <link rel="stylesheet" href="style.css">
+    <title>List Overview</title>
 </head>
+
 <body>
-    <h1>welcome back {{PersonName}}</h1>
-    <form action="/signout" method="post">
-    <button>loggout</button>
+  <div class="signout">
+    <a href="/list"><img src="edit.png" alt="BackToLists" width="20px" height="20px"></a>
+    <a href="/signout"><img src="sign-out.png" alt="singout" width="20px" height="20px"></a>
+  </div>
+
+<div class="topnav">
+  <a class="active" >{{PersonName}}'s info</a>
+</div>
+<h3>userrname: {{Username}}</h3>
+    <form action="/changeUsername" method="post">
+        <label for="newUsername">New Username: </label><input type="text" name="newUsername">
+        <button>Change username</button>
     </form>
+<h3>email: {{Email}}</h3>
+    <form action="/changeEpost" method="post">
+        <label for="newEmail">New Email: </label><input type="email" name="newEmail">
+        <button>Change Email</button>
+    </form>
+<br>
+<form action="/DeleteUser" method="post">
+<input type="hidden" name="UserDelId" value="{{id}}">
+<button>delete this user</button>
+</form>
+
+</form>
 </body>
-<h1><a href="/list">got 2 list</a></h1>
 </html>

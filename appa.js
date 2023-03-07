@@ -133,7 +133,7 @@ app.get("/list", (req, res) => {
 
     //vi lager en sql spøring som joiner tabelen ToDoLists og listElement
     const toDoLists = db.prepare(`
-      SELECT tl.id, tl.name, le.name AS elementName, le.done 
+      SELECT tl.id, tl.name, le.name AS elementName, le.done, le.id AS elementId
       FROM ToDoLists tl 
       LEFT JOIN ListElement le ON tl.id = le.ToDoLists_id 
       WHERE tl.user_id = ? 
@@ -144,6 +144,7 @@ app.get("/list", (req, res) => {
     toDoLists.forEach((row) => {
       const listId = row.id
       const listName = row.name
+      const elementId = row.elementId
       const elementName = row.elementName
       const elementDone = row.done
         
@@ -158,6 +159,7 @@ app.get("/list", (req, res) => {
       //dette if statmente legger til nye elementer i hver liste som ikke er lik null.
       if (elementName !== null) {
         lists[listId].elements.push({
+          id: elementId,
           name: elementName,
           done: elementDone
         })
@@ -238,9 +240,90 @@ app.post("/makeElement", (req, res) => {
 })
 app.post("/ThingDone", (req, res) => {
     let svr = req.body
+
     let doneOrNot = db.prepare(`SELECT done FROM ListElement WHERE id = ?`).all(svr.DonId)
 
+    if(doneOrNot[0].done == 0){
+        db.prepare(`UPDATE ListElement SET done = 1 WHERE id = ?;`).run(svr.DonId)
+    }else if(doneOrNot[0].done == 1){
+        db.prepare(`UPDATE ListElement SET done = 0 WHERE id = ?;`).run(svr.DonId)
+    }else{
+        console.log("You done goofed up boi")
+    }
+    res.redirect("/list")
 })
+app.post("/DelElement", (req, res) => {
+    let svr = req.body
+
+    db.prepare(`DELETE FROM ListElement WHERE id = ?;`).run(svr.LeDelId)
+    
+    res.redirect("/list")
+})
+//User infor site and all the changes to info done there
+app.get("/userInfo", (req, res) => {
+    if (!req.session.loggedin) {
+        res.sendFile(rootpath + "/logg.html")
+        console.log("not logged in")
+        return
+    }
+    const userId = req.session.userID
+    let userInfo = db.prepare(`SELECT * FROM user WHERE id = ?`).all(userId)
+    req.session.username = userInfo[0].name
+    res.render("hoved.hbs", {
+        PersonName: req.session.username,
+        Username: userInfo[0].name,
+        Email: userInfo[0].email,
+        Id: userId
+    })
+})
+app.post("/changeUsername", (req, res) => {
+    let svr = req.body
+    const userId = req.session.userID
+    // \w = A-Z, a-z, and _
+    // \W = NOT A-Z, NOT a-z, and NOT _
+    const allowedRegex = /\W/g
+    const NewUsername = svr.newUsername
+
+    if (allowedRegex.test(NewUsername)) {
+        return res.redirect("/userInfo?error=invalid_username")
+    }
+    db.prepare(`UPDATE user SET name = ? WHERE id = ?;`).run(NewUsername, userId)
+    res.redirect("/userInfo")
+})
+app.post("/changeEpost", (req, res) => {
+    let svr = req.body
+    const userId = req.session.userID
+
+    db.prepare(`UPDATE user SET email = ? WHERE id = ?;`).run(svr.newEmail, userId)
+    res.redirect("/userInfo")
+})
+app.post("/DeleteUser", (req, res) => {
+    let svr = req.body
+    const userId = req.session.userID
+    let Tlid = db.prepare(`SELECT id FROM ToDoLists WHERE user_id = ?;`).all(userId)
+
+    if (typeof Tlid === "string") { //if tehres just one list we delete just one øist
+
+        db.prepare(`DELETE FROM ListElement WHERE ToDoLists_id = ?;`).run(Tlid[0].id)
+        db.prepare(`DELETE FROM ToDoLists_has_tags WHERE ToDoLists_id = ?;`).run(Tlid[0].id)
+    }
+    else if (Array.isArray(Tlid)) { // if theres more then one list we have a for loop that goes through and deletes eveyone
+
+        for(let i = 0; i > Tlid.length(); i++){
+            db.prepare(`DELETE FROM ListElement WHERE ToDoLists_id = ?;`).run(Tlid[i].id)
+            db.prepare(`DELETE FROM ToDoLists_has_tags WHERE ToDoLists_id = ?;`).run(Tlid[i].id)
+        }
+
+    } else {
+        console.log("time to kys")
+    }
+    db.prepare(`DELETE FROM ToDoLists WHERE id = ?;`).run(userId)
+    //db.prepare(`DELETE FROM user WHERE id = ?;`).run(userId)
+
+    //req.session.loggedin = false
+    res.redirect("/")
+})
+
 app.get("/test", (req, res) => {
     res.render("test.hbs", {
         PersonName: req.session.username
