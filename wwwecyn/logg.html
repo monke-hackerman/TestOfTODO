@@ -4,15 +4,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    fieldset{
+        margin-left: 500px;
+        margin-right: 500px;
+        height: 300px;
+        background-color: white;
+    }
+    body{
+        background-image: url("Pattrn.png");
+    }
+    .center {
+        position: absolute;
+        top: 30%;
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+    }
+    .loggInForm{
+        display: inline-block;
+        background-color: rgb(255, 255, 255);
+        width: 30%;
+    } 
+    </style>
     <title>login</title>
 </head>
 <body>
-    <form action="/login" method="post">
-        <label for="emailORuser">Email Or Username: </label><input type="text" name="emailORuser"><br>
-        <label for="password">Passord: </label><input type="password" name="password" id=""><br>
-        <button>Login</button>
-        <h3><a href="reg.html">got no user? sign up here</a></h3>
-    </form>
+    <div class="center">
+        <fieldset>
+            <br> <br>
+        <form action="/login" method="post" class="loggInForm">
+            <label for="emailORuser">Email Or Username: </label><input type="text" name="emailORuser"><br>
+            <label for="password">Passord: </label><input type="password" name="password" id=""><br>
+            <button>Login</button>
+            <h3><a href="reg.html">got no user? sign up here</a></h3>
+        </form>
+        </fieldset>
+    </div>  
     <script>
         const params = new URLSearchParams(window.location.search);
         if(params.get('error')==="not_found"){

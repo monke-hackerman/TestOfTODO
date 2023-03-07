@@ -5,15 +5,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lagbrukr</title>
+    <style>
+        fieldset{
+            margin-left: 500px;
+            margin-right: 500px;
+            height: 300px;
+            background-color: white;
+        }
+        body{
+            background-image: url("Pattrn.png");
+        }
+        .center {
+            position: absolute;
+            top: 30%;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+        }
+        .loggInForm{
+            display: inline-block;
+            background-color: rgb(255, 255, 255);
+            width: 30%;
+        } 
+        </style>
 </head>
 <body>
-    <form action="/NyBruk" method="post">
-        <label for="navn">Brukernavn: </label><input type="text" name="navn" id=""><br>
-        <label for="email">Email: </label><input type="email" name="email"><br>
-        <label for="passord">Passord: </label><input type="password" name="passord" id=""><br>
-        <button>Register ny bruker</button>
-    </form>
-    <h1><a href="/">logginn</a></h1>
+    <div class="center">
+        <fieldset>
+            <br><br><br>
+            <form action="/NyBruk" method="post">
+                <label for="navn">Brukernavn: </label><input type="text" name="navn" id=""><br>
+                <label for="email">Email: </label><input type="email" name="email"><br>
+                <label for="passord">Passord: </label><input type="password" name="passord" id=""><br>
+                <button>Register ny bruker</button>
+            </form>
+            <h3><a href="/">logginn</a></h3>
+        </fieldset>
+    </div>
     <script>
         const params = new URLSearchParams(window.location.search);
         if(params.get('error')==="invalid_username"){

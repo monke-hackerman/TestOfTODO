@@ -27,6 +27,7 @@ app.use(session({
 // alt for logginn
 app.get("/reg.html", (req, res) => {
     res.sendFile(rootpath + "/reg.html")
+    
 })
 
 //ikke bruk men kan skjekke visits
@@ -94,6 +95,7 @@ app.post(("/login"), async (req, res, next) => {
     } else {
         console.log("fuck off")
         res.sendFile(rootpath + "/logg.html")
+        
         req.session.loggedin = false
     }
 })
@@ -101,6 +103,7 @@ app.post(("/login"), async (req, res, next) => {
 app.get(("/signout"), async (req, res) => {
     console.log("byebye")
     res.sendFile(rootpath + "/logg.html")
+    
     req.session.loggedin = false
     if (req.session.loggedin === false) {
         console.log("session ended")
@@ -114,6 +117,7 @@ function Hoved(req, res) {
         res.redirect("/list")
     } else {
         res.sendFile(rootpath + "/logg.html")
+        
         console.log("not logged inn")
     }
 }
@@ -125,6 +129,7 @@ app.get("/", Hoved)
 app.get("/list", (req, res) => {
     if (!req.session.loggedin) {
         res.sendFile(rootpath + "/logg.html")
+        
         console.log("not logged in")
         return
     }
@@ -177,6 +182,7 @@ app.post(("/makelist"), (req, res) => {
     let taggid = []
     if (!userid) {
         res.sendFile(rootpath + "/logg.html")
+        
         console.log("not logged inn")
     }
     //first insert the todolist
@@ -290,6 +296,7 @@ app.post("/DelElement", (req, res) => {
 app.get("/userInfo", (req, res) => {
     if (!req.session.loggedin) {
         res.sendFile(rootpath + "/logg.html")
+        
         console.log("not logged in")
         return
     }
@@ -352,11 +359,6 @@ app.post("/DeleteUser", (req, res) => {
     res.redirect("/")
 })
 
-app.get("/test", (req, res) => {
-    res.render("test.hbs", {
-        PersonName: req.session.username
-    })
-})
 //prøver å stoppe serveren fra å stoppe hvis den krasjer
 app.use((err, req, res, next) => {
     console.warn(err.stack)
