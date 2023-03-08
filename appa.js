@@ -216,16 +216,18 @@ app.post("/CheckTags", (req, res) => {
     if(svr.tags === "ViewAll"){
         res.redirect("/list")
     }
-    let taggid = db.prepare(`SELECT id FROM tags WHERE name = ?`).all(svr.tags)
+
 
     //vi lager en sql spøring som joiner tabelen ToDoLists og listElement
     const toDoLists = db.prepare(`
-    SELECT tl.id, tl.name, le.name AS elementName, le.done, le.id AS elementId, Tlt.ToDoLists_id as TltId, Tlt.tags_id
-    FROM ToDoLists tl, ToDoLists_has_tags Tlt
-    JOIN ListElement le ON tl.id = le.ToDoLists_id and tl.id = TltId and Tlt.tags_id = ?
-    WHERE tl.user_id = ?
-    ORDER BY tl.id, le.id
-    `).all(taggid[0].id, userId)
+    SELECT tl.id, tl.name, le.name AS elementName, le.done, le.id AS elementId 
+    FROM ToDoLists tl 
+    LEFT JOIN ListElement le ON tl.id = le.ToDoLists_id 
+    JOIN ToDoLists_has_tags t ON tl.id = t.ToDoLists_id 
+    JOIN Tags tg ON t.Tags_id = tg.id 
+    WHERE tl.user_id = ? AND tg.name = '${svr.tags}' 
+    ORDER BY tl.id, le.id;
+    `).all(userId)
     //så lager vi en liste hvor vi setter inn all informasjonen
     const lists = {}
     toDoLists.forEach((row) => {
