@@ -17,18 +17,18 @@
 <div class="topnav">
   <a class="active" >{{PersonName}}'s info</a>
 </div>
-<h3>userrname: {{Username}}</h3>
+<h3>userrname: {{Username}}</h3><!--her enderer du username-->
     <form action="/changeUsername" method="post">
         <label for="newUsername">New Username: </label><input type="text" name="newUsername">
         <button>Change username</button>
     </form>
-<h3>email: {{Email}}</h3>
+<h3>email: {{Email}}</h3> <!--her endrer du email-->
     <form action="/changeEpost" method="post">
         <label for="newEmail">New Email: </label><input type="email" name="newEmail">
         <button>Change Email</button>
     </form>
 <br>
-<form action="/DeleteUser" method="post">
+<form action="/DeleteUser" method="post"> <!--her sletter du din egen bruker-->
 <input type="hidden" name="UserDelId" value="{{id}}">
 <button>delete this user</button>
 </form>

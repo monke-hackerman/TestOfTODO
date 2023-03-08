@@ -1,5 +1,6 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
+  background-image: url("Pattrn2.png");
 }
 .topnav {
   overflow: hidden;
@@ -38,16 +39,16 @@ body {
 
 .other {
   overflow: hidden;
-  background-color: white;
+  background-image: url("Pattrn2.png");
 }
 .other label{
   overflow: hidden;
-  background-color: white;
+    background-image: url("Pattrn2.png");
   color: black;
 }
 .lists{
   overflow: hidden;
-  background-color: white;
+    background-image: url("Pattrn2.png");
   color: black;
 }
 .lists label{
