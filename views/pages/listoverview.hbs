@@ -47,27 +47,29 @@
   </form>
 </div>
 <div class="lists"> <!--her er hvor listene vises-->
-  {{#each ListsOwn}}
-    <h3>{{this.name}} <form action="/deleteList" method="post">
-      <input type="hidden" name="DelId" value="{{this.id}}">
+  {{#each ListsOwn}}<!--for hver liste som finners gjør vi alyt under -->
+    <h3>{{this.name}} <form action="/deleteList" method="post"> <!--her er formet for å slette en liste -->
+      <input type="hidden" name="DelId" value="{{this.id}}"><!--den inneholder en sjult id sånn at appen vet hvilken liste du vil slette -->
       <button><img src="bin.png" alt="trash bin" height="20px" width="20px"></button>
       </form>
       </h3>
-    <form action="/makeElement" method="post">
-      <input type="hidden" name="Listname" value="{{this.id}}">
+
+    <form action="/makeElement" method="post"><!--her er formet for å lage ett nytt element -->
+      <input type="hidden" name="Listname" value="{{this.id}}"><!--her er også et sjult id sånn at vi vet hvilken todolist det er snakk om -->
       <label for="elementname">New Element: </label>
-      <input type="text" name="elementname">
+      <input type="text" name="elementname"> <!--her er hvor du legger inn navnet på elementet -->
       <button>Make</button>
     </form>
+    
     <ul>
-      {{#each this.elements}}
+      {{#each this.elements}}<!--så for hver element som hører til en lsite legger vi det inn -->
         <li>{{this.name}} - 
-          <form action="/ThingDone" method="post">
-          <input type="hidden" name="DonId" value="{{this.id}}">
+          <form action="/ThingDone" method="post"><!--her er et form for å skjekk om noe er gjort eller ikke -->
+          <input type="hidden" name="DonId" value="{{this.id}}"><!--og her ligger det enda en sjult id for å skjekke om ting er done/not done -->
           <button>{{#if this.done}}Done{{else}}Not done{{/if}}</button>
           </form>
-          <form action="/DelElement" method="post">
-          <input type="hidden" name="LeDelId" value="{{this.id}}">
+          <form action="/DelElement" method="post"><!--her er et form for å slette et element-->
+          <input type="hidden" name="LeDelId" value="{{this.id}}"><!--her inneholder den siste sjulte iden for å slette et element -->
           <button><img src="bin.png" alt="trash bin" height="10px" width="10px"></button>
           </form>
         </li>
