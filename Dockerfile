@@ -9,7 +9,7 @@ RUN npm i
 
 COPY db.db /app/
 COPY app.js /app/
-COPY public /app/public
+COPY public /app/other
 
 EXPOSE 3000
 
