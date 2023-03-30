@@ -1,17 +1,16 @@
-# Use an official Node.js runtime as a parent image
-FROM node:latest
+FROM node:lts-alpine
 
-# Set the working directory to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+COPY package-lock.json /app
+COPY package.json /app/
 
-# Install any needed packages specified in package.json
-RUN npm install
+RUN npm i
 
-# Make port 3000 available to the world outside this container
+COPY db.db /app/
+COPY app.js /app/
+COPY public /app/public
+
 EXPOSE 3000
 
-# Run the command to start the app
-CMD ["npm", "start"]
+ENTRYPOINT [ "node", "app.js" ]
