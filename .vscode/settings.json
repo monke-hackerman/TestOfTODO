@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:testoftodo}/Databaseer.sdb",
+            "name": "e"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

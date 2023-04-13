@@ -2,7 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const path = require("path");
-const db = require("better-sqlite3")("databaseer.sdb"/*, { verbose: console.log }*/); //verbose er i en kommentar når koden faktisk skal kjøre siden den er der kun for feilsøking
+const db = require("better-sqlite3")("Databaseer.sdb"/*, { verbose: console.log }*/); //verbose er i en kommentar når koden faktisk skal kjøre siden den er der kun for feilsøking
 const hbs = require('hbs')
 const app = express();
 
